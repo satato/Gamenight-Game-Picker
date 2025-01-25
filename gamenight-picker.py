@@ -282,7 +282,7 @@ def query_VR_interest():
             else:
                 print("Invalid response. Please try again.\n\n")
 
-        return True
+    return True
 
 
 def query_flatscreen_interest():
@@ -353,11 +353,19 @@ def compute_recommendations(VR_CATEGORIES, N_CATEGORIES, VR_GAMES, N_GAMES):
         if not GAMENIGHT['Coop']: # no interest in coop games -> remove them
             coop = set(VR_CATEGORIES['coop'])
             vr_game_ids = vr_game_ids - coop
+            if GAMENIGHT['Comp']: # but interested in competitive games! make sure to add any back that are also coop
+                comp = set(VR_CATEGORIES['comp'])
+                double = comp.intersection(coop)
+                vr_game_ids.union(double)
         
         # limit by comp
         if not GAMENIGHT['Comp']: # no interest in comp games -> remove them
             comp = set(VR_CATEGORIES['comp'])
             vr_game_ids = vr_game_ids - comp
+            if GAMENIGHT['Coop']: # but interested in cooperative games! make sure to add any back that are also comp
+                coop = set(VR_CATEGORIES['coop'])
+                double = comp.intersection(coop)
+                vr_game_ids.union(double)
 
         # limit by free
         if GAMENIGHT['FreeOnly']:
@@ -461,15 +469,15 @@ def display_recommendations(VR_CATEGORIES, N_CATEGORIES, VR_GAMES, N_GAMES, vr_g
 
             typeStr = ""
 
-            if game['coop'] and game['comp']:
+            if game['Coop'] and game['Comp']:
                 typeStr = "cooperative and competitive gameplay"
-            elif game['coop']:
+            elif game['Coop']:
                 typeStr = "cooperative gameplay"
-            elif game['comp']:
+            elif game['Comp']:
                 typeStr = "competitive gameplay"
 
             print("    - " + typeStr)
-            print("    - Price in Nintendo Store: " + game['Price'])
+            print("    - Price in Nintendo Store: " + str(game['Price']))
             print("")
 
             index += 1
@@ -548,15 +556,15 @@ def output_recommendations_to_file(VR_CATEGORIES, N_CATEGORIES, VR_GAMES, N_GAME
 
             typeStr = ""
 
-            if game['coop'] and game['comp']:
+            if game['Coop'] and game['Comp']:
                 typeStr = "cooperative and competitive gameplay"
-            elif game['coop']:
+            elif game['Coop']:
                 typeStr = "cooperative gameplay"
-            elif game['comp']:
+            elif game['Comp']:
                 typeStr = "competitive gameplay"
 
             print("    - " + typeStr)
-            print("    - Price in Nintendo Store: " + game['Price'])
+            print("    - Price in Nintendo Store: " + str(game['Price']))
             print("")
 
             index += 1
